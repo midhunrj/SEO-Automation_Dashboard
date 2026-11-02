@@ -1,4 +1,4 @@
-// src/mocks/dataforseo.mock.js
+
 module.exports = {
   tasks: [{
     result: [{

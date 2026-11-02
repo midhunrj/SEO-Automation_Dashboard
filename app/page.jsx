@@ -306,7 +306,7 @@ export default function AdminPortal() {
             </div>
           </div>
 
-          {/* Live Pipeline Stepper View */}
+          
           <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between mb-4">
@@ -329,7 +329,7 @@ export default function AdminPortal() {
                 )}
               </div>
 
-              {/* Progress Bar */}
+              
               <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mb-5">
                 <div
                   className="bg-gradient-to-r from-sky-500 to-indigo-600 h-full transition-all duration-500"
@@ -345,7 +345,7 @@ export default function AdminPortal() {
                 </div>
               )}
 
-              {/* 10-Step Sequential Flow */}
+              
               <div className="space-y-2 max-h-[340px] overflow-y-auto pr-1">
                 {PIPELINE_STEPS.map((s, idx) => {
                   const isCurrent =
@@ -395,7 +395,7 @@ export default function AdminPortal() {
               </div>
             </div>
 
-            {/* Quick action button when completed */}
+            
             {activeAudit?.status === 'COMPLETED' && (
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between">
                 <span className="text-xs text-slate-600 font-medium">
@@ -413,7 +413,7 @@ export default function AdminPortal() {
           </div>
         </div>
 
-        {/* Section: All Audits Table */}
+        
         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
           <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

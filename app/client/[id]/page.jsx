@@ -84,7 +84,7 @@ export default function ClientDashboard() {
   const quickWins = audit.quickWins || [];
   const crawledData = audit.crawledData || {};
 
-  // Filter recommendations
+
   const filteredRecs = recommendations.filter((r) => {
     const matchPriority = priorityFilter === 'ALL' || r.priority === priorityFilter;
     const matchCategory = categoryFilter === 'ALL' || r.category.toLowerCase() === categoryFilter.toLowerCase();
@@ -93,7 +93,7 @@ export default function ClientDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-16">
-      {/* Top Navbar */}
+      
       <header className="border-b border-slate-200 bg-white sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">

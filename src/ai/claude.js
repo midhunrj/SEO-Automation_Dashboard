@@ -1,4 +1,4 @@
-// src/ai/claude.js
+
 const { USE_MOCKS } = require('../mocks');
 
 const SYSTEM_PROMPT = `You are a senior SEO analyst with 15+ years experience specialising in Indian local business websites, healthcare, dental, and real estate sectors.
@@ -6,9 +6,7 @@ You produce honest, falsifiable, prioritised SEO audit reports.
 Your output must be valid JSON only — no markdown, no preamble.
 Every recommendation must include: finding, fix, estimated_impact (High/Medium/Low), effort (Hours/Days/Weeks), falsifiability_check (how we know if this worked).`;
 
-/**
- * Generate AI SEO Analysis using Claude API or realistic fallback
- */
+
 async function generateSEOAnalysis({
   url,
   businessType = 'Dental Clinic',
@@ -69,7 +67,7 @@ Respond ONLY with this JSON structure — no other text:
   "executive_summary": "<3 sentences max, plain English>"
 }`;
 
-  // Try real Anthropic Claude API if key is present
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!USE_MOCKS && apiKey && apiKey !== 'mock_key' && !apiKey.startsWith('sk-ant-api03-mock')) {
     try {
@@ -93,7 +91,7 @@ Respond ONLY with this JSON structure — no other text:
     }
   }
 
-  // Fallback / Mock Generator: generates dynamic, realistic, falsifiable SEO data
+  
   console.log('[Claude AI] Using Mock/Fallback Engine (conforming to Edgelink JSON schema)');
   return generateMockSEOAudit({
     url,

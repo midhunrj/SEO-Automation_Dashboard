@@ -1,4 +1,4 @@
-// src/mocks/twilio.mock.js
+
 async function sendWhatsApp(clientId, pdfPath, score) {
   console.log('[MOCK WHATSAPP] → Client:', clientId);
   console.log('[MOCK WHATSAPP] → Score: ', score + '/100');

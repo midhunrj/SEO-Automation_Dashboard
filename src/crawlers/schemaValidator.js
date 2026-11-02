@@ -1,9 +1,7 @@
-// src/crawlers/schemaValidator.js
+
 const cheerio = require('cheerio');
 
-/**
- * Step 4: Schema.org structured data validator
- */
+
 async function validateSchema(html) {
   const $ = cheerio.load(html);
   const jsonLdScripts = $('script[type="application/ld+json"]');
@@ -33,7 +31,7 @@ async function validateSchema(html) {
     }
   });
 
-  // Calculate schema compliance score
+
   let score = 40;
   if (schemasFound.length > 0) score += 20;
   if (hasLocalBusiness) score += 25;

@@ -1,4 +1,4 @@
-// src/mocks/pagespeed.mock.js
+
 module.exports = {
   url: 'https://example-dental-clinic.com',
   strategy: 'mobile',

@@ -1,4 +1,4 @@
-// src/mocks/gsc.mock.js
+
 module.exports = {
   rows: [
     { query: 'dental clinic in pune', clicks: 42, impressions: 980, ctr: 0.043, position: 6.2 },

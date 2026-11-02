@@ -1,11 +1,8 @@
-// src/crawlers/pagespeed.js
+
 const { USE_MOCKS } = require('../mocks');
 const mockData = require('../mocks/pagespeed.mock');
 
-/**
- * Fetch Google PageSpeed Insights data for the target URL.
- * Falls back to realistic mock data if USE_MOCKS is true or if API call fails.
- */
+
 async function getPageSpeed(url) {
   if (USE_MOCKS) {
     return { ...mockData, url };

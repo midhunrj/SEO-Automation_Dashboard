@@ -1,11 +1,11 @@
-// src/lib/db.js
+
 const fs = require('fs');
 const path = require('path');
 
 let prismaClient = null;
 let usePrisma = false;
 
-// Attempt to initialize Prisma if DATABASE_URL is configured
+
 if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres')) {
   try {
     const { PrismaClient } = require('@prisma/client');
@@ -18,7 +18,7 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
   }
 }
 
-// Fallback JSON-file storage for immediate zero-config local testing
+
 const DATA_DIR = path.join(process.cwd(), '.data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 

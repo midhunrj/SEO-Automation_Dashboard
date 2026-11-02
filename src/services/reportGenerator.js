@@ -1,13 +1,10 @@
-// src/services/reportGenerator.js
+
 const fs = require('fs');
 const path = require('path');
 
-/**
- * Generate a comprehensive PDF report for an SEO audit.
- * Uses Puppeteer if available, with a rock-solid PDF-Lib fallback so it always succeeds.
- */
+
 async function generatePDFReport(auditData) {
-  // Ensure report directory exists
+  
   const reportsDir = path.join(process.cwd(), 'public', 'reports');
   if (!fs.existsSync(reportsDir)) {
     fs.mkdirSync(reportsDir, { recursive: true });
@@ -17,7 +14,7 @@ async function generatePDFReport(auditData) {
   const pdfPath = path.join(reportsDir, fileName);
   const publicUrl = `/reports/${fileName}`;
 
-  // 1. Try Puppeteer HTML to PDF
+
   try {
     const puppeteer = require('puppeteer');
     const htmlContent = buildReportHtml(auditData);
@@ -42,7 +39,7 @@ async function generatePDFReport(auditData) {
     console.warn(`[PDF Generator] Puppeteer not available (${puppeteerErr.message}). Using native PDF generator.`);
   }
 
-  // 2. Reliable Fallback using pdf-lib
+
   try {
     const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
     const pdfDoc = await PDFDocument.create();
@@ -53,13 +50,13 @@ async function generatePDFReport(auditData) {
     const { width, height } = page.getSize();
     let y = height - 50;
 
-    // Header banner
+    
     page.drawRectangle({
       x: 30,
       y: y - 50,
       width: width - 60,
       height: 60,
-      color: rgb(0.08, 0.18, 0.36) // Deep Navy
+      color: rgb(0.08, 0.18, 0.36) 
     });
 
     page.drawText('EDGELINK TECHNOLOGY', {
@@ -79,7 +76,7 @@ async function generatePDFReport(auditData) {
 
     y -= 80;
 
-    // Meta details
+    
     page.drawText(`Target Website: ${auditData.url || 'https://example-dental-clinic.com'}`, {
       x: 35,
       y,
@@ -106,7 +103,7 @@ async function generatePDFReport(auditData) {
 
     y -= 30;
 
-    // Overall Score Card
+    
     const score = auditData.overall_score || auditData.overallScore || 75;
     page.drawRectangle({
       x: 30,
@@ -130,7 +127,7 @@ async function generatePDFReport(auditData) {
       color: score >= 80 ? rgb(0.1, 0.6, 0.2) : score >= 60 ? rgb(0.85, 0.5, 0.1) : rgb(0.8, 0.2, 0.2)
     });
 
-    // Score Breakdown box
+    
     const breakdown = auditData.score_breakdown || auditData.scoreBreakdown || {
       technical: 78,
       on_page: 81,
@@ -158,7 +155,7 @@ async function generatePDFReport(auditData) {
 
     y -= 80;
 
-    // Executive Summary
+    
     page.drawText('Executive Summary', {
       x: 35,
       y,
@@ -178,7 +175,7 @@ async function generatePDFReport(auditData) {
 
     y -= 35;
 
-    // Critical Issues
+    
     page.drawText('Critical Issues (Immediate Action Required)', {
       x: 35,
       y,
@@ -201,7 +198,7 @@ async function generatePDFReport(auditData) {
 
     y -= 15;
 
-    // Prioritized Recommendations
+    
     page.drawText('Prioritized Recommendations', {
       x: 35,
       y,
@@ -239,7 +236,7 @@ async function generatePDFReport(auditData) {
       y -= 16;
     });
 
-    // Footer
+    
     page.drawText('Automated Audit Pipeline by EdgeLink Technology • Contact: hr@edgelinktechnology.com', {
       x: 100,
       y: 25,
@@ -255,7 +252,7 @@ async function generatePDFReport(auditData) {
     return { pdfPath, publicUrl };
   } catch (err) {
     console.error(`[PDF Generator] Failed to generate PDF: ${err.message}`);
-    // Save empty file or text fallback
+    
     fs.writeFileSync(pdfPath, `SEO Report for ${auditData.url}\nOverall Score: ${auditData.overall_score || 75}/100`);
     return { pdfPath, publicUrl };
   }

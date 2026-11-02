@@ -1,4 +1,4 @@
-// src/workers/auditWorker.js
+
 const { Worker } = require('bullmq');
 const { QUEUE_NAME, redisConnection } = require('../queues/auditQueue');
 const { crawlUrl } = require('../crawlers/cheerioCrawler');
@@ -12,9 +12,7 @@ const { generatePDFReport } = require('../services/reportGenerator');
 const { sendWhatsAppNotification } = require('../services/twilioNotifier');
 const { db } = require('../lib/db');
 
-/**
- * Executes the full 7-step SEO audit pipeline + Claude AI + PDF generation + Twilio notification
- */
+
 async function processAuditPipeline(jobData, progressCallback = null) {
   const { auditId, url, businessType, city, state, clientId } = jobData;
 
@@ -92,7 +90,7 @@ async function processAuditPipeline(jobData, progressCallback = null) {
       score: aiAnalysis.overall_score
     });
 
-    // Finalize audit record in database
+    
     await updateStatus(100, 'Audit Completed', {
       overallScore: aiAnalysis.overall_score,
       scoreBreakdown: aiAnalysis.score_breakdown,
@@ -130,7 +128,7 @@ async function processAuditPipeline(jobData, progressCallback = null) {
   }
 }
 
-// Start BullMQ Worker if executed as a standalone background worker or Redis is connected
+
 let worker = null;
 if (redisConnection) {
   try {
@@ -154,7 +152,7 @@ if (redisConnection) {
   }
 }
 
-// If invoked from CLI directly: node src/workers/auditWorker.js
+
 if (require.main === module) {
   console.log(`[Worker CLI] SEO Audit Worker is running. Queue: ${QUEUE_NAME}`);
   console.log('[Worker CLI] Press Ctrl+C to terminate.');

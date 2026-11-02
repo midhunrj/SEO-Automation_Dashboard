@@ -31,17 +31,17 @@ model Audit {
   businessType     String   @default("Dental Clinic")
   city             String   @default("Pune")
   state            String   @default("Maharashtra")
-  status           String   @default("PENDING") // PENDING, QUEUED, PROCESSING, COMPLETED, FAILED
-  progress         Int      @default(0) // 0 to 100
-  currentStep      String?  // e.g. "Step 1: Cheerio Crawl"
+  status           String   @default("PENDING") 
+  progress         Int      @default(0) 
+  currentStep      String?  
   overallScore     Int?
-  scoreBreakdown   Json?    // { technical, on_page, content, core_web_vitals, schema }
-  criticalIssues   Json?    // string[]
-  importantIssues  Json?    // string[]
-  quickWins        Json?    // string[]
-  recommendations  Json?    // Array of { priority, category, finding, fix, estimated_impact, effort, falsifiability_check }
+  scoreBreakdown   Json?    
+  criticalIssues   Json?    
+  importantIssues  Json?    
+  quickWins        Json?    
+  recommendations  Json?    
   executiveSummary String?
-  crawledData      Json?    // Raw combined data from crawlers & APIs
+  crawledData      Json?    
   pdfPath          String?
   pdfUrl           String?
   whatsappStatus   String?

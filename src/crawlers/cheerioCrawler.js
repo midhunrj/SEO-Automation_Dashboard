@@ -1,9 +1,6 @@
-// src/crawlers/cheerioCrawler.js
+
 const cheerio = require('cheerio');
 
-/**
- * Step 1 & Step 5: Fetch HTML and perform on-page SEO analysis using Cheerio
- */
 async function crawlUrl(url) {
   let html = '';
   let statusCode = 200;
@@ -22,7 +19,7 @@ async function crawlUrl(url) {
     html = await res.text();
   } catch (error) {
     console.warn(`[Crawler] Could not fetch live URL (${error.message}). Using simulated page document.`);
-    // Provide a rich simulated dental clinic HTML page for testing offline or mock URLs
+    
     html = `
       <!DOCTYPE html>
       <html lang="en">
@@ -74,7 +71,6 @@ async function crawlUrl(url) {
 
   const $ = cheerio.load(html);
 
-  // Extract On-Page SEO elements
   const title = $('title').text().trim() || null;
   const metaDescription = $('meta[name="description"]').attr('content')?.trim() || null;
   const canonical = $('link[rel="canonical"]').attr('href')?.trim() || null;
@@ -82,12 +78,11 @@ async function crawlUrl(url) {
   const ogTitle = $('meta[property="og:title"]').attr('content')?.trim() || null;
   const ogDescription = $('meta[property="og:description"]').attr('content')?.trim() || null;
 
-  // Headings
+  
   const h1Elements = $('h1').map((_, el) => $(el).text().trim()).get();
   const h2Elements = $('h2').map((_, el) => $(el).text().trim()).get();
   const h3Elements = $('h3').map((_, el) => $(el).text().trim()).get();
 
-  // Images
   const images = $('img');
   let imagesWithoutAlt = 0;
   images.each((_, el) => {
@@ -95,7 +90,7 @@ async function crawlUrl(url) {
     if (!alt || alt.trim() === '') imagesWithoutAlt++;
   });
 
-  // Links
+  
   const links = $('a');
   let internalLinks = 0;
   let externalLinks = 0;
@@ -109,7 +104,7 @@ async function crawlUrl(url) {
     }
   });
 
-  // Text content & word count
+
   const bodyText = $('body').text().replace(/\s+/g, ' ').trim();
   const wordCount = bodyText.split(' ').filter(Boolean).length;
 

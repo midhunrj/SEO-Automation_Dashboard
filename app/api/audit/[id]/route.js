@@ -3,10 +3,7 @@ import { db } from '../../../../src/lib/db';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * GET /api/audit/[id]
- * Fetch audit status, progress, scores and recommendations
- */
+
 export async function GET(req, { params }) {
   try {
     const { id } = params;

@@ -1,8 +1,4 @@
-// src/crawlers/robotsSitemap.js
 
-/**
- * Step 6: robots.txt + sitemap.xml check
- */
 async function checkRobotsAndSitemap(url) {
   try {
     const parsed = new URL(url.startsWith('http') ? url : `https://${url}`);
@@ -17,7 +13,7 @@ async function checkRobotsAndSitemap(url) {
     let sitemapFound = false;
     let sitemapUrlCount = 0;
 
-    // Check robots.txt
+
     try {
       const robotsRes = await fetch(robotsUrl, { signal: AbortSignal.timeout(4000) });
       if (robotsRes.ok) {
@@ -29,7 +25,7 @@ async function checkRobotsAndSitemap(url) {
       robotsFound = false;
     }
 
-    // Check sitemap.xml
+    
     try {
       const sitemapRes = await fetch(sitemapUrl, { signal: AbortSignal.timeout(4000) });
       if (sitemapRes.ok) {
@@ -42,7 +38,7 @@ async function checkRobotsAndSitemap(url) {
       sitemapFound = false;
     }
 
-    // If both failed because of mock or local testing, provide sensible defaults
+    
     if (!robotsFound && !sitemapFound) {
       return {
         robotsTxt: {

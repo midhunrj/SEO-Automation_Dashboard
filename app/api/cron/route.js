@@ -4,10 +4,7 @@ import { addAuditJob } from '../../../src/queues/auditQueue';
 
 export const dynamic = 'force-dynamic';
 
-/**
- * GET /api/cron
- * Called per minute by cron-job.org to process queue or trigger scheduled monthly audits
- */
+
 export async function GET(req) {
   try {
     const audits = await db.audit.findMany();
@@ -15,7 +12,7 @@ export async function GET(req) {
 
     console.log(`[Cron Trigger] Checked audits. ${queuedAudits.length} queued jobs pending.`);
 
-    // If there is any queued audit that was stuck, re-trigger
+
     for (const audit of queuedAudits) {
       await addAuditJob({
         auditId: audit.id,

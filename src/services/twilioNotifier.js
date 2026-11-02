@@ -1,10 +1,8 @@
-// src/services/twilioNotifier.js
+
 const { USE_MOCKS } = require('../mocks');
 const mockTwilio = require('../mocks/twilio.mock');
 
-/**
- * Deliver audit completion notification and PDF link via WhatsApp
- */
+
 async function sendWhatsAppNotification({ clientId, pdfPath, score, phone }) {
   if (USE_MOCKS) {
     return await mockTwilio.sendWhatsApp(clientId || phone || 'client_pune_dental', pdfPath, score);
@@ -20,7 +18,7 @@ async function sendWhatsAppNotification({ clientId, pdfPath, score, phone }) {
       return await mockTwilio.sendWhatsApp(clientId, pdfPath, score);
     }
 
-    // In production with approved WhatsApp template:
+
     console.log(`[Twilio Production] Sending WhatsApp message to ${phone}...`);
     return await mockTwilio.sendWhatsApp(clientId, pdfPath, score);
   } catch (err) {

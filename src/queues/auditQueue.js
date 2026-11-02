@@ -1,4 +1,4 @@
-// src/queues/auditQueue.js
+
 const { Queue } = require('bullmq');
 const IORedis = require('ioredis');
 
@@ -8,7 +8,7 @@ let auditQueue = null;
 let redisConnection = null;
 let isRedisAvailable = false;
 
-// Initialize Redis connection for Upstash or local Redis
+
 const redisUrl = process.env.UPSTASH_REDIS_URL || process.env.REDIS_URL;
 
 if (redisUrl && !redisUrl.includes('placeholder')) {
@@ -35,9 +35,7 @@ if (redisUrl && !redisUrl.includes('placeholder')) {
   }
 }
 
-/**
- * Add an audit task to the BullMQ queue
- */
+
 async function addAuditJob(data) {
   const jobId = `job_${data.auditId || Date.now()}`;
 
@@ -60,8 +58,7 @@ async function addAuditJob(data) {
     }
   }
 
-  // Graceful In-Process / Serverless Fallback
-  // Executes asynchronously so HTTP response is returned immediately
+
   setImmediate(async () => {
     try {
       const { processAuditPipeline } = require('../workers/auditWorker');
