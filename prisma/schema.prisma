@@ -1,0 +1,55 @@
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Client {
+  id           String   @id @default(uuid())
+  name         String
+  email        String
+  phone        String?
+  domain       String
+  businessType String   @default("Dental Clinic")
+  city         String   @default("Pune")
+  state        String   @default("Maharashtra")
+  country      String   @default("India")
+  audits       Audit[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("clients")
+}
+
+model Audit {
+  id               String   @id @default(uuid())
+  url              String
+  businessType     String   @default("Dental Clinic")
+  city             String   @default("Pune")
+  state            String   @default("Maharashtra")
+  status           String   @default("PENDING") // PENDING, QUEUED, PROCESSING, COMPLETED, FAILED
+  progress         Int      @default(0) // 0 to 100
+  currentStep      String?  // e.g. "Step 1: Cheerio Crawl"
+  overallScore     Int?
+  scoreBreakdown   Json?    // { technical, on_page, content, core_web_vitals, schema }
+  criticalIssues   Json?    // string[]
+  importantIssues  Json?    // string[]
+  quickWins        Json?    // string[]
+  recommendations  Json?    // Array of { priority, category, finding, fix, estimated_impact, effort, falsifiability_check }
+  executiveSummary String?
+  crawledData      Json?    // Raw combined data from crawlers & APIs
+  pdfPath          String?
+  pdfUrl           String?
+  whatsappStatus   String?
+  errorMessage     String?
+  clientId         String?
+  client           Client?  @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("audits")
+}
