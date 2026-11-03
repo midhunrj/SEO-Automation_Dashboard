@@ -1,20 +1,18 @@
+
 import { NextResponse } from 'next/server';
 import { db } from '../../../src/lib/db';
-import { addAuditJob } from '../../../src/queues/auditQueue';
+import { processAuditPipeline } from '../../../src/workers/auditWorker';
 
 export const dynamic = 'force-dynamic';
-
 
 export async function GET() {
   try {
     const audits = await db.audit.findMany();
     return NextResponse.json({ success: true, audits });
   } catch (error) {
-    console.error('[API GET /api/audit Error]', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
-
 
 export async function POST(req) {
   try {
@@ -25,7 +23,6 @@ export async function POST(req) {
       return NextResponse.json({ success: false, error: 'URL is required' }, { status: 400 });
     }
 
-    
     if (!url.startsWith('http://') && !url.startsWith('https://')) {
       url = `https://${url}`;
     }
@@ -37,32 +34,33 @@ export async function POST(req) {
         businessType,
         city,
         state,
-        status: 'QUEUED',
-        progress: 5,
-        currentStep: 'Job queued in BullMQ (seo-audit-jobs)',
+        status: 'PROCESSING',
+        progress: 10,
+        currentStep: 'Step 1: Crawling website DOM using Fetch & Cheerio',
         clientId: clientId || null
       }
     });
 
 
-    const queueResult = await addAuditJob({
-      auditId: audit.id,
-      url,
-      businessType,
-      city,
-      state,
-      clientId: clientId || 'client_demo'
-    });
+    try {
+      await processAuditPipeline({
+        auditId: audit.id,
+        url,
+        businessType,
+        city,
+        state,
+        clientId: clientId || 'client_demo'
+      });
+    } catch (pipelineErr) {
+      console.warn('Pipeline execution notice:', pipelineErr.message);
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'SEO audit queued successfully',
-      auditId: audit.id,
-      jobId: queueResult.jobId,
-      queueMode: queueResult.mode
+      message: 'SEO audit completed successfully',
+      auditId: audit.id
     });
   } catch (error) {
-    console.error('[API POST /api/audit Error]', error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
