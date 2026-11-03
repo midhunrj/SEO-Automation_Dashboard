@@ -13,66 +13,79 @@ if (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgres'))
     usePrisma = true;
     console.log('[Database] Connected to PostgreSQL via Prisma');
   } catch (err) {
-    console.warn(`[Database] Prisma initialization error: ${err.message}. Using fallback JSON store.`);
+    console.warn(`[Database] Prisma initialization error: ${err.message}. Using fallback store.`);
     usePrisma = false;
   }
 }
 
 
-const DATA_DIR = path.join(process.cwd(), '.data');
+if (!global._inMemoryDb) {
+  global._inMemoryDb = {
+    clients: [
+      {
+        id: 'client_pune_dental_1',
+        name: 'Pune Dental Care Clinic',
+        email: 'contact@example-dental-clinic.com',
+        phone: '+919876543210',
+        domain: 'https://example-dental-clinic.com',
+        businessType: 'Dental Clinic',
+        city: 'Pune',
+        state: 'Maharashtra',
+        country: 'India',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      }
+    ],
+    audits: []
+  };
+}
+
+
+const isVercel = process.env.VERCEL === '1' || !!process.env.AWS_LAMBDA_FUNCTION_NAME;
+const DATA_DIR = isVercel ? path.join('/tmp', '.data') : path.join(process.cwd(), '.data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 
 function ensureDataFile() {
-  if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-  if (!fs.existsSync(DB_FILE)) {
-    const initialData = {
-      clients: [
-        {
-          id: 'client_pune_dental_1',
-          name: 'Pune Dental Care Clinic',
-          email: 'contact@example-dental-clinic.com',
-          phone: '+919876543210',
-          domain: 'https://example-dental-clinic.com',
-          businessType: 'Dental Clinic',
-          city: 'Pune',
-          state: 'Maharashtra',
-          country: 'India',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-      ],
-      audits: []
-    };
-    fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
+  try {
+    if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+    if (!fs.existsSync(DB_FILE)) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(global._inMemoryDb, null, 2));
+    }
+  } catch (e) {
+
   }
 }
 
 function readData() {
   ensureDataFile();
   try {
-    const raw = fs.readFileSync(DB_FILE, 'utf-8');
-    return JSON.parse(raw);
-  } catch (_) {
-    return { clients: [], audits: [] };
-  }
+    if (fs.existsSync(DB_FILE)) {
+      const raw = fs.readFileSync(DB_FILE, 'utf-8');
+      const parsed = JSON.parse(raw);
+      global._inMemoryDb = parsed;
+      return parsed;
+    }
+  } catch (_) {}
+  return global._inMemoryDb;
 }
 
 function writeData(data) {
-  ensureDataFile();
-  fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  global._inMemoryDb = data;
+  try {
+    ensureDataFile();
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
+  } catch (_) {}
 }
 
 const db = {
   client: {
     async findMany() {
       if (usePrisma && prismaClient) return await prismaClient.client.findMany({ include: { audits: true } });
-      const data = readData();
-      return data.clients;
+      return readData().clients;
     },
     async findUnique({ where }) {
       if (usePrisma && prismaClient) return await prismaClient.client.findUnique({ where, include: { audits: true } });
-      const data = readData();
-      return data.clients.find(c => c.id === where.id) || null;
+      return readData().clients.find(c => c.id === where.id) || null;
     },
     async create({ data }) {
       if (usePrisma && prismaClient) return await prismaClient.client.create({ data });
@@ -96,8 +109,7 @@ const db = {
     },
     async findUnique({ where }) {
       if (usePrisma && prismaClient) return await prismaClient.audit.findUnique({ where });
-      const data = readData();
-      return data.audits.find(a => a.id === where.id) || null;
+      return readData().audits.find(a => a.id === where.id) || null;
     },
     async create({ data }) {
       if (usePrisma && prismaClient) return await prismaClient.audit.create({ data });
