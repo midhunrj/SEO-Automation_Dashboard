@@ -19,7 +19,7 @@ export default function AdminPortal() {
   const [audits, setAudits] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // 1. Initial Load: Fetch all past audits once, then poll every 5s
+ 
   const fetchAudits = async () => {
     try {
       const res = await fetch('/api/audit');
@@ -36,7 +36,7 @@ export default function AdminPortal() {
     return () => clearInterval(interval);
   }, []);
 
-  // 2. Active Audit Poller: When activeAuditId changes, poll progress every 1.5s
+  
   useEffect(() => {
     if (!activeAuditId) return;
 
@@ -60,7 +60,7 @@ export default function AdminPortal() {
     return () => clearInterval(pollInterval);
   }, [activeAuditId]);
 
-  // 3. Form Submit Handler: Triggers the new audit
+
   const handleTriggerAudit = async (e) => {
     e.preventDefault();
     setLoading(true);
